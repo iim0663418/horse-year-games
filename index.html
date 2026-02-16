@@ -45,7 +45,7 @@
 
 <div id="game-over-screen" class="ui hidden">
     <img src="doc/93050067.jpg" alt="" class="avatar">
-    <h2>勝繙祝你馬年新年快樂</h2>
+    <h2 id="greetingText">勝繙祝你馬年新年快樂</h2>
     <h3>馬到成功！</h3>
     <p>本次獲得了 <span id="finalScore" style="color:#facc15;font-weight:700">0</span> 個紅包</p>
     <button class="btn" id="restart-btn">再玩一次</button>
@@ -499,6 +499,15 @@ function startGame() {
     bgmPlay();
 }
 
+const GREETINGS = [
+    { max: 50,  msgs: ['馬年初試，來年再戰！','小試牛刀，馬到成功指日可待！','新年伊始，好運才剛開始！'] },
+    { max: 150, msgs: ['馬不停蹄，財運亨通！','紅包滿滿，福氣連連！','馬年行大運，步步高升！'] },
+    { max: 300, msgs: ['馬到成功！財源廣進！','一馬當先，鴻運當頭！','馬年大吉，萬事如意！'] },
+    { max: 500, msgs: ['龍馬精神！財富滾滾來！','馬上有錢，富貴逼人！','馬年封神，財運爆棚！'] },
+    { max: Infinity, msgs: ['🎊 馬年財神降臨！富可敵國！','🏆 紅包大師！馬到成功巔峰！','👑 馬年之王！財運無人能敵！'] },
+];
+function getGreeting(s){ const t=GREETINGS.find(g=>s<=g.max); const a=t.msgs; return a[Math.floor(Math.random()*a.length)]; }
+
 function gameOver() {
     gameState = 'GAMEOVER';
     triggerShake(20, 40); vibrate([80,40,120,40,100]);
@@ -506,6 +515,7 @@ function gameOver() {
     Audio.explode();
     if(score > highScore){ highScore=score; highScoreEl.textContent=highScore; }
     finalScoreEl.textContent = score;
+    document.getElementById('greetingText').textContent = getGreeting(score);
     updatePauseBtn();
     setTimeout(()=>gameOverScreen.classList.remove('hidden'), 600);
 }
