@@ -1,0 +1,26 @@
+# 專案文件
+.DS_Store
+*.log
+*.swp
+*.swo
+*~
+
+# 編輯器
+.vscode/
+.idea/
+*.sublime-*
+
+# 系統文件
+Thumbs.db
+desktop.ini
+
+# 臨時文件
+tmp/
+temp/
+*.tmp
+
+# 音樂文件（需手動下載）
+music/*.mp3
+music/*.ogg
+music/*.wav
+!music/README.md
