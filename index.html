@@ -77,6 +77,16 @@ function bgmPlay() {
         console.warn('[BGM] 無法播放：音樂檔案未找到 (music/bgm.mp3)');
         return;
     }
+    // Resume AudioContext for Web Audio API sounds
+    const resumeAudio = () => {
+        try {
+            if(Audio && typeof Audio.getCtx === 'function') {
+                const ctx = Audio.getCtx();
+                if(ctx.state === 'suspended') ctx.resume();
+            }
+        } catch(e) {}
+    };
+    resumeAudio();
     bgm.play().then(() => {
         bgmStarted = true;
         console.log('[BGM] 播放中');
@@ -118,6 +128,8 @@ const Audio = (() => {
     function play(freq, type='sine', dur=0.12, freqEnd=null, vol=0.08) {
         try {
             const ac = getCtx();
+            // Resume if suspended
+            if(ac.state === 'suspended') ac.resume();
             if(!master.gain){ master.gain = ac.createGain(); master.gain.connect(ac.destination); master.gain.gain.value=0.5; }
             const osc = ac.createOscillator(), g = ac.createGain();
             osc.connect(g); g.connect(master.gain);
@@ -131,6 +143,7 @@ const Audio = (() => {
     }
 
     return {
+        getCtx,  // Export for external resume
         jump:    ()=>play(220,'sine',.15,700),
         collect: ()=>{ play(660,'triangle',.08,1320); play(880,'triangle',.12,1760,.04); },
         combo:   (n)=>play(440+n*80,'triangle',.1),
